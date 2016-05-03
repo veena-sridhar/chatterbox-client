@@ -5,17 +5,30 @@
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
 
+
     <!-- dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
   </head>
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
+      <h3>Room:     
+       <select>
+        <option value="1">Main</option>
+        <option value="2">Random</option>
+        <option value="3">Lobby</option>
+        <option value="4">Testing</option>
+      </select>
+      </h3>
+      <form>
+        <input type="text" class="success"></input>
+        <button type="submit">submit</button>
+      </form>
     </div>
     <div id="chats"></div>
   </body>
