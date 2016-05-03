@@ -26,15 +26,22 @@ var escapeCharacters = {
 };
 
 var characterReplace = function(string) {
+  //debugger;
   var newString = '';
-  for (var i = 0; i < string.length; i++) {
-    if (escapeCharacters.hasOwnProperty[string[i]]) {
-      newString += escapeCharacters[string[i]];
-    } else {
-      newString += string[i];
+  if (typeof string !== 'string') {
+    string = JSON.stringify(string);
+  } else if (string === undefined) {
+    newString += 'undefined';
+  } else if (typeof string === 'string') {
+    for (var i = 0; i < string.length; i++) {
+      if (escapeCharacters.hasOwnProperty[string[i]]) {
+        newString += escapeCharacters[string[i]];
+      } else {
+        newString += string[i];
+      }
     }
+    return newString;
   }
-  return newString;
 };
 
 
@@ -58,51 +65,61 @@ var app = {
   send: function(message) {
     console.log('message is: ', message);
     $.ajax({
-      url: 'https://api.parse.com/1/classes/messages',
+      url: app.server,
       type: 'POST',
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data) {
+        console.log('Inside send success method');
         $('.success').val('');
         messageArray.push(data);
-        //$('#chats').append('<div class="chats">' + message + '</div>');
-      }
+
+      },
     });
   },
   fetch: function () {
     $.ajax({
-      url: 'https://api.parse.com/1/classes/messages',
+      url: app.server,
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        messageArray.push(data);
+        _.each(data.results, function (arrayItem) {
+          $('#chats').append('<div class="chat">' + 
+            '<div class="username">' + characterReplace(arrayItem.username) + '</div>' + 
+            '<br />' + 
+            characterReplace(arrayItem.text) + '</div>');
+        });
       }
     });
+  },
+  clearMessages: function () {
+
   }
 };
 
 // YOUR CODE HERE:
-$(document).ready(function() { 
 
+$(document).ready(function() { 
+  app.server = 'https://api.parse.com/1/classes/messages';
   app.init();
+  app.fetch();
   
   
-  $('form').submit(function() {
+  $('form').submit(function(event) {
+    event.preventDefault();
+    console.log('submit function just ran');
     var message = {
       username: window.location.search.slice(10),
-      userMessage: characterReplace($('.success').val()),
+      text: characterReplace($('.success').val()),
       roomname: $('select').val()
     };
-    app.send(userMessage);
-    event.stopPropagation();
+    app.send(message);
     console.log('message sent from form!');
+
+
   });
 
-
-
-
-
-
+// $('body').css('background-image', 'url("https://cdn.meme.am/instances/500x/52835032.jpg")');
 
 
 
