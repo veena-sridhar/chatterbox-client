@@ -25,8 +25,18 @@ var escapeCharacters = {
 
 };
 
+
+
+// var characterReplace = function(strTemp) { 
+// strTemp = strTemp.replace(/\<|\>|\"|\'|\%|\;|\(|\)|\&|\+|\-/g, ''); 
+//   return strTemp;
+// }; 
+
+
 var characterReplace = function(string) {
   //debugger;
+  // regex filter
+  string = string.replace(/\<|\>|\"|\'|\%|\;|\(|\)|\&|\+|\-/g, ''); 
   var newString = '';
   if (typeof string !== 'string') {
     string = JSON.stringify(string);
