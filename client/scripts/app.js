@@ -1,62 +1,18 @@
 
 var messageArray = [];
+var friends = [];
 
 
-var escapeCharacters = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  "'": '&apos;',
-  '"': '&dblac;',
-  '`': '&grave;',
-  ',': '&comma;',
-  '!': '&excl;',
-  '@': '&commat;',
-  '$': '&dollar;',
-  '%': '&percnt;',
-  '(': '&lpar;',
-  ')': '&rpar;',
-  '=': '&equals;',
-  '+': '&plus;',
-  '{': '&lcub;',
-  '}': '&rcub;',
-  '[': '&lsqb;',
-  ']': '&rsqb;'
+// var characterReplace = function(string) {
+//   //debugger;
+//   // regex filter
+//   if (string === undefined) {
+//     string = 'undefined';
+//   }
+//   string = string.replace(/\<|\>|\"|\'|\%|\;|\(|\)|\&|\+|\-/g, ''); 
+//   return string;
 
-};
-
-
-
-// var characterReplace = function(strTemp) { 
-// strTemp = strTemp.replace(/\<|\>|\"|\'|\%|\;|\(|\)|\&|\+|\-/g, ''); 
-//   return strTemp;
-// }; 
-
-
-var characterReplace = function(string) {
-  //debugger;
-  // regex filter
-  string = string.replace(/\<|\>|\"|\'|\%|\;|\(|\)|\&|\+|\-/g, ''); 
-  var newString = '';
-  if (typeof string !== 'string') {
-    string = JSON.stringify(string);
-  } else if (string === undefined) {
-    newString += 'undefined';
-  } else if (typeof string === 'string') {
-    for (var i = 0; i < string.length; i++) {
-      if (escapeCharacters.hasOwnProperty[string[i]]) {
-        newString += escapeCharacters[string[i]];
-      } else {
-        newString += string[i];
-      }
-    }
-    return newString;
-  }
-};
-
-
-
-
+// };
 
 
 var app = {
@@ -95,42 +51,87 @@ var app = {
       success: function(data) {
         _.each(data.results, function (arrayItem) {
           $('#chats').append('<div class="chat">' + 
-            '<div class="username">' + characterReplace(arrayItem.username) + '</div>' + 
-            '<br />' + 
-            characterReplace(arrayItem.text) + '</div>');
+            '<div class="username ' + _.escape(arrayItem.username) + '"">' + _.escape(arrayItem.username) + '</div>' + 
+            '<br />' +  
+            '<div class="text">' + _.escape(arrayItem.text) + '</div>' + '</div>');
+          $('.username').click(function() {
+            if (!_.contains(friends, $(this).text())) {
+              friends.push($(this).text());
+            }
+            app.addFriend(arrayItem);
+          });
         });
+
       }
     });
   },
   clearMessages: function () {
+    var toRemove = document.getElementById('chats');
+    while (toRemove.firstChild) {
+      toRemove.removeChild(toRemove.firstChild);
+    }
+  },
+  addMessage: function (messageObject) {
+    var cleanMessage = _.escape(messageObject.text);
+    $('#chats').append('<div class="chat">' +
+      '<div class="username">' + window.location.search.slice(10) + '</div>' +
+      '<br />' +
+      cleanMessage + '</div>');
 
+  },
+  addRoom: function (roomObject) {
+    var roomName = roomObject.roomname;
+    $('select').append('<option value =' + '"' + roomName + '">' + roomName + '</option>');
+  },
+  addFriend: function(messageObject) {
+
+    //if the friends array contains the object's username
+    if (_.contains(friends, messageObject.username)) {
+      $('.' + messageObject.username).addClass('friend');
+    }
+    //change css on the message objects with that particular username
   }
 };
 
-// YOUR CODE HERE:
 
 $(document).ready(function() { 
   app.server = 'https://api.parse.com/1/classes/messages';
   app.init();
-  app.fetch();
-  
+  setInterval(function() {
+    app.fetch();
+  }, 1000);
   
   $('form').submit(function(event) {
     event.preventDefault();
     console.log('submit function just ran');
     var message = {
       username: window.location.search.slice(10),
-      text: characterReplace($('.success').val()),
+      text: _.escape($('.success').val()),
       roomname: $('select').val()
     };
     app.send(message);
     console.log('message sent from form!');
 
-
   });
 
-// $('body').css('background-image', 'url("https://cdn.meme.am/instances/500x/52835032.jpg")');
+  $('.username').on('click', function() {
+    var message = {
+      username: window.location.search.slice(10),
+      text: _.escape($('.success').val()),
+      roomname: $('select').val()
+    };
+    app.addFriend(message);
+  });
 
 
+
+    // $('body').on('click', '.usernameclick(function(event) {
+    // console.log('handling the click on username');
+    // // if (!_.contains(friends, $(this).text())) {
+    // //   friends.push($(this).text());
+    // // }
+  // });
+
+  //$('body').css('background-image', 'url("http://sharocity.com/wp-content/uploads/2012/11/Rollin-Yoda-Internet-Meme.jpg")');
 
 });

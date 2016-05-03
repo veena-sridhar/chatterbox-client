@@ -67,6 +67,14 @@ form input[type=text] {
 
 .chat .username {
     font-weight: 800;
+    color: blue;
+    cursor: pointer;
+    transition: text-decoration 0.5s ease-in-out;
+    text-decoration: none;
+}
+
+.username:hover {
+    text-decoration: underline;
 }
 
 .chat:hover {
@@ -87,4 +95,5 @@ form input[type=text] {
     color: #fff;
     background-color: #0090da;
 }
+
 
