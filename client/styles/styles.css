@@ -1,5 +1,5 @@
 body {
-    background: #eee;
+    background: #FF6A00;
     text-align: center;
     padding: 0 25px;
     font-family: arial, sans-serif;
@@ -9,9 +9,9 @@ body {
     width: 500px;
     margin: auto;
     text-align: left;
-    background: white;
+    background: #00A3B2;
     padding: 50px 60px;
-    border: solid #ddd;
+    border-radius: 40px;
     border-width: 0 1px 1px 1px;
 }
 
@@ -20,10 +20,17 @@ body {
     font-size: 35px;
     margin-bottom: 5px;
     padding: 5px;
+    font-family: 'Lobster', cursive;
+    font-size: 3em;
 }
 
 #main h1 span {
     font-style:italic;
+}
+
+#main h3 {
+    font-family: 'Lobster', cursive;
+    font-size: 1.5em;
 }
 
 #main ul {
@@ -46,6 +53,13 @@ body {
     line-height: 13px;
 }
 
+#main {
+    height: 11em;
+    width: 50%;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
 form {
     padding-bottom: 20px;
     padding-left: 0;
@@ -55,8 +69,19 @@ form {
 form input[type=text] {
     margin-right: 10px;
     width: 70%;
+    height: 30px;
     font-size: 12px;
     padding: 5px;
+    border-radius: 15px;
+}
+
+button {
+    height: 30px;
+    width: 50px;
+    border-radius: 15px;
+    border-color: #FF6A00;
+    background-color: #FF6A00;
+    font-family: 'Cabin', sans-serif;
 }
 
 .chat {
@@ -66,11 +91,21 @@ form input[type=text] {
 }
 
 .chat .username {
-    font-weight: 800;
-    color: blue;
+    color: #CC5500;
     cursor: pointer;
     transition: text-decoration 0.5s ease-in-out;
     text-decoration: none;
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.5em;
+}
+
+.text {
+    font-family: 'Cabin', sans-serif;
+    font-size: 1em;
+}
+
+#chats {
+    width: 50%;
 }
 
 .username:hover {
@@ -93,7 +128,7 @@ form input[type=text] {
 
 .friend {
     color: #fff;
-    background-color: #0090da;
+    background-color: #00E9FF;
 }
 
 #friendListDiv {
@@ -101,11 +136,17 @@ form input[type=text] {
     top: 0;
     right: 0;
     width: 15%;
+    margin-top: 10px;
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.2em;
+    height: 15em;
 }
 
 .friendName {
     list-style-type: none;
     padding-bottom: 20px;
+    font-family: 'Cabin', sans-serif;
+    font-size: 0.75em;
 }
 
 

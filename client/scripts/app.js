@@ -47,8 +47,10 @@ var app = {
         var mostRecentMessage = data.results[data.results.length - 1];
         var displayedRoom = $('select').val();
         $('.username').click(function() {
+          //add friend
           app.addFriend($(this).text());
         });
+        //populate html with messages
         _.each(data.results, function (arrayItem) {
           if (mostRecentMessage.objectId !== app.lastMessageId || arrayItem.roomname !== displayedRoom) {
             if (arrayItem.text && arrayItem.username) {
@@ -70,14 +72,6 @@ var app = {
       toRemove.removeChild(toRemove.firstChild);
     }
   },
-  addMessage: function (messageObject) {
-    var cleanMessage = _.escape(messageObject.text);
-    $('#chats').append('<div class="chat">' +
-      '<div class="username">' + window.location.search.slice(10) + '</div>' +
-      '<br />' +
-      cleanMessage + '</div>');
-
-  },
   addRoom: function (roomObject) {
     var roomName = roomObject.roomname;
     $('select').append('<option value =' + '"' + roomName + '">' + roomName + '</option>');
@@ -93,16 +87,12 @@ var app = {
   }
 };
 
-
 $(document).ready(function() { 
   app.server = 'https://api.parse.com/1/classes/messages';
   app.init();
+  // retrieve message from server
   app.fetch();
-
-  // var displayFriend = function () {
-  //   $('.friendList').append('<li class="friendName">' + friends[friends.length - 1] + '</li>');
-  // };
-
+  // send message to server
   $('form').submit(function(event) {
     event.preventDefault();
     var message = {
@@ -112,7 +102,7 @@ $(document).ready(function() {
     };
     app.send(message);
   });
-
+  // click userName event
   $('.username').on('click', function() {
     var message = {
       username: window.location.search.slice(10),
@@ -122,16 +112,4 @@ $(document).ready(function() {
     app.addFriend(message);
   
   });
-
-
-
-    // $('body').on('click', '.usernameclick(function(event) {
-    // console.log('handling the click on username');
-    // // if (!_.contains(friends, $(this).text())) {
-    // //   friends.push($(this).text());
-    // // }
-  // });
-
-  //$('body').css('background-image', 'url("http://sharocity.com/wp-content/uploads/2012/11/Rollin-Yoda-Internet-Meme.jpg")');
-
 });
