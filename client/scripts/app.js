@@ -1,21 +1,9 @@
 
 var messageArray = [];
 var friends = [];
-
-
-// var characterReplace = function(string) {
-//   //debugger;
-//   // regex filter
-//   if (string === undefined) {
-//     string = 'undefined';
-//   }
-//   string = string.replace(/\<|\>|\"|\'|\%|\;|\(|\)|\&|\+|\-/g, ''); 
-//   return string;
-
-// };
-
-
 var app = {
+  lastMessageId: 0,
+
   init: function() {
     if (!/(&|\?)username=/.test(window.location.search)) {
       var newSearch = window.location.search;
@@ -26,6 +14,9 @@ var app = {
       window.location.search = newSearch;
       console.log('this is the init function');
     }
+
+    setInterval(app.fetch, 2000);
+    
   },
 
   send: function(message) {
@@ -48,20 +39,28 @@ var app = {
       url: app.server,
       type: 'GET',
       contentType: 'application/json',
+      data: { order: '-createdAt'},
       success: function(data) {
-        _.each(data.results, function (arrayItem) {
-          $('#chats').append('<div class="chat">' + 
-            '<div class="username ' + _.escape(arrayItem.username) + '"">' + _.escape(arrayItem.username) + '</div>' + 
-            '<br />' +  
-            '<div class="text">' + _.escape(arrayItem.text) + '</div>' + '</div>');
-          $('.username').click(function() {
-            if (!_.contains(friends, $(this).text())) {
-              friends.push($(this).text());
-            }
-            app.addFriend(arrayItem);
-          });
+        if (!data.results || !data.results.length) {
+          return;
+        }
+        var mostRecentMessage = data.results[data.results.length - 1];
+        var displayedRoom = $('select').val();
+        $('.username').click(function() {
+          app.addFriend($(this).text());
         });
-
+        _.each(data.results, function (arrayItem) {
+          if (mostRecentMessage.objectId !== app.lastMessageId || arrayItem.roomname !== displayedRoom) {
+            if (arrayItem.text && arrayItem.username) {
+              $('#chats').append('<div class="chat">' + 
+                '<div class="username ' + _.escape(arrayItem.username) + '"">' + _.escape(arrayItem.username) + '</div>' + 
+                '<br />' +  
+                '<div class="text">' + _.escape(arrayItem.text) + '</div>' + '</div>');
+            }
+          }
+          app.lastMessageId = mostRecentMessage.objectId;
+        });
+        
       }
     });
   },
@@ -83,13 +82,14 @@ var app = {
     var roomName = roomObject.roomname;
     $('select').append('<option value =' + '"' + roomName + '">' + roomName + '</option>');
   },
-  addFriend: function(messageObject) {
-
-    //if the friends array contains the object's username
-    if (_.contains(friends, messageObject.username)) {
-      $('.' + messageObject.username).addClass('friend');
+  addFriend: function(userName) {
+    if (_.contains(friends, userName)) {
+      return;
+    } else {
+      $('.' + userName).addClass('friend');
+      friends.push(userName);
+      $('.friendList').append('<li class="friendName">' + friends[friends.length - 1] + '</li>');
     }
-    //change css on the message objects with that particular username
   }
 };
 
@@ -97,21 +97,20 @@ var app = {
 $(document).ready(function() { 
   app.server = 'https://api.parse.com/1/classes/messages';
   app.init();
-  setInterval(function() {
-    app.fetch();
-  }, 1000);
-  
+  app.fetch();
+
+  // var displayFriend = function () {
+  //   $('.friendList').append('<li class="friendName">' + friends[friends.length - 1] + '</li>');
+  // };
+
   $('form').submit(function(event) {
     event.preventDefault();
-    console.log('submit function just ran');
     var message = {
       username: window.location.search.slice(10),
       text: _.escape($('.success').val()),
       roomname: $('select').val()
     };
     app.send(message);
-    console.log('message sent from form!');
-
   });
 
   $('.username').on('click', function() {
@@ -121,6 +120,7 @@ $(document).ready(function() {
       roomname: $('select').val()
     };
     app.addFriend(message);
+  
   });
 
 

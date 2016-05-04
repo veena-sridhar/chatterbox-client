@@ -5,7 +5,7 @@ body {
     font-family: arial, sans-serif;
 }
 
-#main, #chats {
+#main, #chats, #friendListDiv {
     width: 500px;
     margin: auto;
     text-align: left;
@@ -94,6 +94,18 @@ form input[type=text] {
 .friend {
     color: #fff;
     background-color: #0090da;
+}
+
+#friendListDiv {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 15%;
+}
+
+.friendName {
+    list-style-type: none;
+    padding-bottom: 20px;
 }
 
 
